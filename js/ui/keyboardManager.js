@@ -247,7 +247,10 @@ var SubscriptableFlagIcon = GObject.registerClass({
         this._imageBin = new St.Bin({ y_align: Clutter.ActorAlign.CENTER });
         this.add_child(this._imageBin);
 
-        this._drawingArea = new St.DrawingArea({});
+        this._drawingArea = new St.DrawingArea({
+            x_expand: true,
+            y_expand: true,
+        });
         this._drawingArea.connect('repaint', this._drawingAreaRepaint.bind(this));
 
         this.add_child(this._drawingArea);
