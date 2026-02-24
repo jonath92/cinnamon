@@ -534,7 +534,9 @@ function start() {
 
     _screensaverSettings = new Gio.Settings({ schema_id: 'org.cinnamon.desktop.screensaver' });
 
-    if (global.settings.get_boolean('internal-screensaver-enabled')) {
+    // The internal screensaver is the only option for wayland sessions. X11 sessions can use either
+    // the internal one or cinnamon-screensaver (>= 6.7).
+    if (Meta.is_wayland_compositor() || global.settings.get_boolean('internal-screensaver-enabled')) {
         _screenShield = new ScreenShield.ScreenShield();
         new ScreenSaver.ScreenSaverService(_screenShield);
     }
