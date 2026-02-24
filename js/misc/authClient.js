@@ -6,7 +6,6 @@ const GLib = imports.gi.GLib;
 const Signals = imports.signals;
 
 const Config = imports.misc.config;
-const ScreenShield = imports.ui.screensaver.screenShield;
 
 const SIGTERM = 15;
 
@@ -35,7 +34,7 @@ var AuthClient = class {
             let argv = [helper_path];
             let flags = Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE;
 
-            if (ScreenShield._debug) {
+            if (global.settings.get_boolean('debug-screensaver')) {
                 argv.push('--debug');
             } else {
                 flags |= Gio.SubprocessFlags.STDERR_SILENCE;
@@ -160,7 +159,7 @@ var AuthClient = class {
                 for (let i = 0; i < lines.length; i++) {
                     let output = lines[i];
                     if (output.length > 0) {
-                        if (ScreenShield._debug)
+                        if (global.settings.get_boolean('debug-screensaver'))
                             global.log(`authClient: received: '${output}'`);
 
                         if (output === 'CS_PAM_AUTH_FAILURE') {

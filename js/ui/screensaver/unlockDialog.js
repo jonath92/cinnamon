@@ -12,7 +12,6 @@ const Pango = imports.gi.Pango;
 const AuthClient = imports.misc.authClient;
 const CinnamonEntry = imports.ui.cinnamonEntry;
 const KeyboardManager = imports.ui.keyboardManager;
-const ScreenShield = imports.ui.screensaver.screenShield;
 const UserWidget = imports.ui.userWidget;
 const Util = imports.misc.util;
 const Main = imports.ui.main;
@@ -279,7 +278,7 @@ class UnlockDialog extends St.BoxLayout {
         } else {
             hintText = prompt.replace(/:$/, '');
         }
-        if (ScreenShield._debug)
+        if (global.settings.get_boolean('debug-screensaver'))
             global.log(`UnlockDialog: prompt='${prompt}', hintText='${hintText}'`);
 
         this._infoLabel.text = '';
