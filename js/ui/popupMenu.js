@@ -519,7 +519,7 @@ var PopupMenuItem = class PopupMenuItem extends PopupBaseMenuItem {
             }
             if (!this._ornament.child) {
                 let radioOrn = new RadioButton.RadioButton();
-                switchOrn.set_checked(state);
+                radioOrn.set_checked(state);
                 this._ornament.child = radioOrn;
             } else {
                 this._ornament.child.set_checked(state);
