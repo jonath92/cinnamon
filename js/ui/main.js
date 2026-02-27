@@ -549,7 +549,7 @@ function start() {
     }
 
     // Protect security-critical exported functions from being replaced by extensions.
-    for (let fnName of ['lockScreen', 'screenShieldHideKeyboard']) {
+    for (let fnName of ['lockScreen', 'screenShieldHideKeyboard', 'toggleKeyboard']) {
         Object.defineProperty(imports.ui.main, fnName, {
             value: imports.ui.main[fnName],
             writable: false,
@@ -1759,4 +1759,11 @@ function _doLock(awayMessage) {
 
 function screenShieldHideKeyboard() {
     _screenShield?._hideScreensaverKeyboard();
+}
+
+function toggleKeyboard() {
+    if (_screenShield?.visible)
+        _screenShield._toggleScreensaverKeyboard();
+    else
+        virtualKeyboardManager.manualToggle();
 }
