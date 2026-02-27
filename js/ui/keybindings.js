@@ -276,7 +276,8 @@ KeybindingManager.prototype = {
 
     addHotKeyArray: function(name, bindings, callback,
                              flags=Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
-                             allowedModes=Cinnamon.ActionMode.NORMAL) {
+                             allowedModes=Cinnamon.ActionMode.NORMAL |
+                                          Cinnamon.ActionMode.POPUP) {
         let [existing_action_id, entry] = this._lookupEntry(name);
 
         if (entry !== undefined) {

@@ -445,12 +445,6 @@ var WindowManager = class WindowManager {
         return this._seenWindows.has(metaWindow);
     }
 
-    _filterKeybinding(shellwm, binding) {
-        // TODO: We can use ActionModes to manage what keybindings are
-        // available where. For now just disable this, things are handled
-        // in Main._stageEventHandler.
-        return false;
-    }
 
     onSettingsChanged(settings, key, data=null) {
         if (key === "desktop-effects-workspace") {
