@@ -263,11 +263,12 @@ function _initUserSession() {
 
     systrayManager = new Systray.SystrayManager();
 
-    Meta.keybindings_set_custom_handler('panel-run-dialog', function() {
-        if (!lockdownSettings.get_boolean('disable-command-line')) {
-            getRunDialog().open();
-        }
-    });
+    keybindingManager.setBuiltinHandler('panel-run-dialog', Meta.KeyBindingAction.PANEL_RUN_DIALOG,
+        function() {
+            if (!lockdownSettings.get_boolean('disable-command-line')) {
+                getRunDialog().open();
+            }
+        }, Cinnamon.ActionMode.NORMAL);
 }
 
 function _loadOskLayouts() {
@@ -1251,7 +1252,6 @@ function _shouldFilterKeybinding(entry) {
 function _stageEventHandler(actor, event) {
     if (modalCount == 0)
         return false;
-    // log("Stage event handler........." + event.type() + "..." + event.get_source() + "...flags: "+event.get_flags());
 
     if (event.type() != Clutter.EventType.KEY_PRESS) {
         if(!popup_rendering_actor || event.type() != Clutter.EventType.BUTTON_RELEASE)
@@ -1259,61 +1259,18 @@ function _stageEventHandler(actor, event) {
         return (event.get_source() && popup_rendering_actor.contains(event.get_source()));
     }
 
-    let symbol = event.get_key_symbol();
     let keyCode = event.get_key_code();
     let modifierState = Cinnamon.get_event_state(event);
 
     let action = global.display.get_keybinding_action(keyCode, modifierState);
     if (!(event.get_source() instanceof Clutter.Text && (event.get_flags() & Clutter.EventFlags.INPUT_METHOD))) {
-        // This relies on the fact that Clutter.ModifierType is the same as Gdk.ModifierType
         if (action > 0) {
-            // Check if this keybinding should be filtered based on ActionMode
             let entry = keybindingManager.getBindingById(action);
             if (!_shouldFilterKeybinding(entry)) {
                 keybindingManager.invoke_keybinding_action_by_id(action);
+                return true;
             }
         }
-    }
-
-    // Other bindings are only available when the overview is up and no modal dialog is present
-    if (((!overview.visible && !expo.visible) || modalCount > 1))
-        return false;
-
-    // This isn't a Meta.KeyBindingAction yet
-    if (symbol === Clutter.KEY_Super_L || symbol === Clutter.KEY_Super_R) {
-        if (expo.visible) {
-            expo.hide();
-            return true;
-        }
-    }
-
-    if (action == Meta.KeyBindingAction.SWITCH_PANELS) {
-        //Used to call the ctrlalttabmanager in Gnome Shell
-        return true;
-    }
-
-    switch (action) {
-        // left/right would effectively act as synonyms for up/down if we enabled them;
-        // but that could be considered confusing; we also disable them in the main view.
-        case Meta.KeyBindingAction.WORKSPACE_LEFT:
-            wm.actionMoveWorkspaceLeft();
-            return true;
-        case Meta.KeyBindingAction.WORKSPACE_RIGHT:
-            wm.actionMoveWorkspaceRight();
-            return true;
-        case Meta.KeyBindingAction.WORKSPACE_UP:
-            overview.hide();
-            expo.hide();
-            return true;
-        case Meta.KeyBindingAction.WORKSPACE_DOWN:
-            overview.hide();
-            expo.hide();
-            return true;
-        case Meta.KeyBindingAction.PANEL_RUN_DIALOG:
-            if (!lockdownSettings.get_boolean('disable-command-line')) {
-                getRunDialog().open();
-            }
-            return true;
     }
 
     return false;

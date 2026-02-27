@@ -173,6 +173,10 @@ Expo.prototype = {
                         }
                         return true;
                     }
+                    if (symbol === Clutter.KEY_Super_L || symbol === Clutter.KEY_Super_R) {
+                        this.hide();
+                        return true;
+                    }
                 }
                 return false;
             }));
@@ -267,7 +271,7 @@ Expo.prototype = {
             return;
         this.beforeShow();
         // Do this manually instead of using _syncInputMode, to handle failure
-        if (!Main.pushModal(this._group, undefined, undefined, Cinnamon.ActionMode.OVERVIEW))
+        if (!Main.pushModal(this._group, undefined, undefined, Cinnamon.ActionMode.EXPO))
             return;
         this._modal = true;
         this._animateVisible();
@@ -389,7 +393,7 @@ Expo.prototype = {
 
         if (this._shown) {
             if (!this._modal) {
-                if (Main.pushModal(this._group, undefined, undefined, Cinnamon.ActionMode.OVERVIEW))
+                if (Main.pushModal(this._group, undefined, undefined, Cinnamon.ActionMode.EXPO))
                     this._modal = true;
                 else
                     this.hide();

@@ -426,11 +426,32 @@ KeybindingManager.prototype = {
         this._proxy.HandleKeybindingRemote(action);
     },
 
+    _onBuiltinKeyPressed: function(display, window, binding, actionId) {
+        let entry = this.bindings.get(actionId);
+
+        if (entry === undefined || Main._shouldFilterKeybinding(entry))
+            return;
+
+        entry.callback(display, window, binding);
+    },
+
+    setBuiltinHandler: function(name, actionId, callback, allowedModes=Cinnamon.ActionMode.NORMAL) {
+        Meta.keybindings_set_custom_handler(name,
+            (display, window, binding) => this._onBuiltinKeyPressed(display, window, binding, actionId)
+        );
+
+        this.bindings.set(actionId, {
+            name: name,
+            bindings: [],
+            callback: callback,
+            allowedModes: allowedModes
+        });
+    },
+
     invoke_keybinding_action_by_id: function(id) {
-        const binding = this.bindings.get(id);
-        if (binding !== undefined) {
-            // log(`invoke_keybinding_action_by_id: ${binding.name}, bindings: ${binding.bindings} - action id: ${id}`);
-            binding.callback(null, null, null);
+        const entry = this.bindings.get(id);
+        if (entry !== undefined) {
+            entry.callback(null, null, { get_name: () => entry.name });
         }
     }
 };
